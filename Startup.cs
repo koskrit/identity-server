@@ -44,7 +44,6 @@ namespace IdentityServerBackend
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseSuccessEvents = true;
 
-                    // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                     options.EmitStaticAudienceClaim = true;
                 })
                 .AddInMemoryIdentityResources(Config.IdentityResources)
@@ -63,6 +62,18 @@ namespace IdentityServerBackend
                 app.UseDatabaseErrorPage();
             }
             app.UseIdentityServer();
+
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var userManager = scope.ServiceProvider.GetRequiredService<
+                    UserManager<ApplicationUser>
+                >();
+
+                var user = new ApplicationUser { UserName = "user1", Email = "user1@mail.com", };
+
+                var result = userManager.CreateAsync(user, "Some1234@").GetAwaiter().GetResult();
+            }
         }
     }
 }
