@@ -1,6 +1,8 @@
 using System;
 using IdentityServer4;
 using IdentityServer4.Services;
+using IdentityServerBackend.Data;
+using IdentityServerBackend.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +26,14 @@ namespace IdentityServerBackend
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseInMemoryDatabase("identity")
+            );
+
+            services
+                .AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
             services.AddMvc();
         }
 
