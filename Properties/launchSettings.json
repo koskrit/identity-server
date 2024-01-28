@@ -1,0 +1,11 @@
+{
+   "profiles": {
+      "IdentityServerBackend": {
+         "commandName": "Project",
+         "environmentVariables": {
+            "ASPNETCORE_ENVIRONMENT": "Development"
+         },
+         "applicationUrl": "https://localhost:4242/"
+      }
+   }
+}
