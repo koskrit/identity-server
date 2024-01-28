@@ -26,6 +26,8 @@ namespace IdentityServerBackend
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseInMemoryDatabase("identity")
             );
@@ -49,7 +51,10 @@ namespace IdentityServerBackend
                     }
                 );
             });
+
             services.AddMvc();
+            services.AddTransient<PasswordHasher<ApplicationUser>>();
+            services.AddControllers();
 
             var builder = services
                 .AddIdentityServer(options =>
@@ -76,9 +81,15 @@ namespace IdentityServerBackend
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
+            app.UseStaticFiles();
             app.UseCors("CorsPolicy");
 
+            app.UseRouting();
             app.UseIdentityServer();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+            });
 
             using (var scope = serviceProvider.CreateScope())
             {
