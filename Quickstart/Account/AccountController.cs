@@ -355,5 +355,34 @@ namespace IdentityServerHost.Quickstart.UI
 
             return vm;
         }
+
+        [HttpGet]
+        public ActionResult Register([FromQuery] string redirectUrl)
+        {
+            ViewBag.redirectUrl = redirectUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterSubmit(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return Redirect(model.ReturnUrl);
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
+        }
     }
 }
