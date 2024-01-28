@@ -107,7 +107,7 @@ namespace IdentityServerBackend
 
                 var user = new ApplicationUser { UserName = "user1", Email = "user1@mail.com", };
 
-                var result = userManager.CreateAsync(user, "Some1234@").GetAwaiter().GetResult();
+                var result = userManager.CreateAsync(user, "Some123!").GetAwaiter().GetResult();
             }
         }
     }
