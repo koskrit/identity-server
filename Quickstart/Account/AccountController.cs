@@ -367,6 +367,8 @@ namespace IdentityServerHost.Quickstart.UI
         [AllowAnonymous]
         public async Task<IActionResult> RegisterSubmit(RegisterViewModel model)
         {
+            var url = model.ReturnUrl != null ? model.ReturnUrl : "/";
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
@@ -374,7 +376,8 @@ namespace IdentityServerHost.Quickstart.UI
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return Redirect(model.ReturnUrl);
+
+                    return Redirect(url);
                 }
                 foreach (var error in result.Errors)
                 {
