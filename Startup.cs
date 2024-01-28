@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using IdentityServer4;
 using IdentityServer4.Services;
 using IdentityServerBackend.Data;
@@ -43,10 +44,16 @@ namespace IdentityServerBackend
                     "CorsPolicy",
                     corsBuilder =>
                     {
+                        var allowedOrigins = new[]
+                        {
+                            "http://localhost:4200",
+                            "httpw://localhost:4242"
+                        };
+
                         corsBuilder
                             .AllowAnyHeader()
                             .AllowAnyMethod()
-                            .SetIsOriginAllowed(origin => origin == "http://localhost:4200")
+                            .SetIsOriginAllowed(origin => allowedOrigins.Contains(origin))
                             .AllowCredentials();
                     }
                 );
