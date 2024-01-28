@@ -34,6 +34,21 @@ namespace IdentityServerBackend
                 .AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    "CorsPolicy",
+                    corsBuilder =>
+                    {
+                        corsBuilder
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .SetIsOriginAllowed(origin => origin == "http://localhost:4200")
+                            .AllowCredentials();
+                    }
+                );
+            });
             services.AddMvc();
 
             var builder = services
@@ -61,6 +76,8 @@ namespace IdentityServerBackend
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
+            app.UseCors("CorsPolicy");
+
             app.UseIdentityServer();
 
             using (var scope = serviceProvider.CreateScope())
