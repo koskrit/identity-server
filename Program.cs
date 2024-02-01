@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ namespace IdentityServerBackend
                 var host = CreateHostBuilder(args).Build();
 
                 Log.Information("Starting host...");
+                InitialIdentityServerSeed(host);
                 host.Run();
                 return 0;
             }
@@ -56,5 +58,25 @@ namespace IdentityServerBackend
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private static void InitialIdentityServerSeed(IHost host)
+        {
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                try
+                {
+                    var connectionString = services
+                        .GetRequiredService<IConfiguration>()
+                        .GetConnectionString("DefaultConnection");
+                    SeedData.EnsureSeedData(connectionString);
+                }
+                catch (Exception ex)
+                {
+                    Log.Information(ex, "An error occurred while seeding the database.");
+                }
+            }
+        }
     }
 }

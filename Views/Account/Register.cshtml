@@ -52,7 +52,11 @@
             <h2 class="login-title">Sign Up</h2>
             <form asp-action="RegisterSubmit">
               <input type="hidden" asp-for="ReturnUrl" value="@ViewBag.RedirectUrl" />
-
+      
+              <div class="form-group">
+                <label asp-for="Username" class="sr-only">Username</label>
+                <input asp-for="Username" type="text" name="Username" id="Username" class="form-control" placeholder="Email">
+              </div>
               <div class="form-group">
                 <label asp-for="Email" class="sr-only">Email</label>
                 <input asp-for="Email" type="text" name="Email" id="email" class="form-control" placeholder="Email">
@@ -64,7 +68,7 @@
 
               <div class="form-group mb-3">
                 <label asp-for="ConfirmPassword" class="sr-only">ConfirmPassword</label>
-                <input asp-for="ConfirmPassword" type="password" name="ConfirmPassword" id="ConfirmPassword" class="form-control" placeholder="Password">
+                <input asp-for="ConfirmPassword" type="password" name="ConfirmPassword" id="ConfirmPassword" class="form-control" placeholder="Confirm Password">
               </div>
 
   

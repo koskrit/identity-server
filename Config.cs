@@ -36,10 +36,21 @@ namespace IdentityServerBackend
                     {
                         "http://localhost:4200/signin-callback",
                         "http://localhost:4200/assets/silent-callback.html",
-                        "http://localhost:4200/register-callback"
+                        "http://localhost:4200/register-callback",
+                        "https://showcase-cms.netlify.app/signin-callback",
+                        "https://showcase-cms.netlify.app/assets/silent-callback.html",
+                        "https://showcase-cms.netlify.app/register-callback"
                     },
-                    PostLogoutRedirectUris = { "http://localhost:4200/signout-callback" },
-                    AllowedCorsOrigins = { "http://localhost:4200" },
+                    PostLogoutRedirectUris =
+                    {
+                        "http://localhost:4200/signout-callback",
+                        "https://showcase-cms.netlify.app/signout-callback"
+                    },
+                    AllowedCorsOrigins =
+                    {
+                        "http://localhost:4200",
+                        "https://showcase-cms.netlify.app"
+                    },
 
                     AllowedScopes =
                     {

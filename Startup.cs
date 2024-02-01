@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using IdentityServer4;
+using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Services;
 using IdentityServerBackend.Data;
 using IdentityServerBackend.Models;
@@ -30,7 +31,7 @@ namespace IdentityServerBackend
             services.AddControllersWithViews();
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseInMemoryDatabase("identity")
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
             );
 
             services
@@ -73,9 +74,27 @@ namespace IdentityServerBackend
 
                     options.EmitStaticAudienceClaim = true;
                 })
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients)
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                    {
+                        builder.UseNpgsql(
+                            Configuration.GetConnectionString("DefaultConnection"),
+                            b => b.MigrationsAssembly("IdentityServerBackend")
+                        );
+                    };
+                })
+                .AddPersistedGrantStore<PersistedGrantStore>()
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                    {
+                        builder.UseNpgsql(
+                            Configuration.GetConnectionString("DefaultConnection"),
+                            b => b.MigrationsAssembly("IdentityServerBackend")
+                        );
+                    };
+                })
                 .AddAspNetIdentity<ApplicationUser>();
 
             builder.AddDeveloperSigningCredential();
