@@ -36,7 +36,6 @@ namespace IdentityServerBackend
                 var host = CreateHostBuilder(args).Build();
 
                 Log.Information("Starting host...");
-                InitialIdentityServerSeed(host);
                 host.Run();
                 return 0;
             }
