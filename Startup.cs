@@ -7,6 +7,7 @@ using IdentityServerBackend.Data;
 using IdentityServerBackend.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -61,6 +62,18 @@ namespace IdentityServerBackend
             });
 
             services.AddMvc();
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.Secure = CookieSecurePolicy.Always;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
             services.AddTransient<PasswordHasher<ApplicationUser>>();
             services.AddControllers();
 
@@ -112,6 +125,9 @@ namespace IdentityServerBackend
 
             app.UseRouting();
             app.UseIdentityServer();
+
+            app.UseCookiePolicy();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
