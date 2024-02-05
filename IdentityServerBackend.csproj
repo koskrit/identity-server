@@ -8,6 +8,10 @@
     <PackageReference Include="Dangl.IdentityServer4.AspNetIdentity" Version="4.2.1" />
     <PackageReference Include="Dangl.IdentityServer4.EntityFramework" Version="4.2.1" />
 
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="7.0.1" />
+
+
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.1" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />

@@ -1,10 +1,13 @@
 ﻿using IdentityServerBackend.Models;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServerBackend.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext
+        : IdentityDbContext<ApplicationUser>,
+            IDataProtectionKeyContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
@@ -13,5 +16,7 @@ namespace IdentityServerBackend.Data
         {
             base.OnModelCreating(builder);
         }
+
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     }
 }
