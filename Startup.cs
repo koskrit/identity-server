@@ -147,18 +147,6 @@ namespace IdentityServerBackend
             {
                 endpoints.MapDefaultControllerRoute();
             });
-
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                var userManager = scope.ServiceProvider.GetRequiredService<
-                    UserManager<ApplicationUser>
-                >();
-
-                var user = new ApplicationUser { UserName = "user1", Email = "user1@mail.com", };
-
-                var result = userManager.CreateAsync(user, "Some123!").GetAwaiter().GetResult();
-            }
         }
     }
 }
