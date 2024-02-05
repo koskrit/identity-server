@@ -199,6 +199,7 @@ namespace IdentityServerHost.Quickstart.UI
             }
             else
             {
+                vm.PostLogoutRedirectUri = "/Account/Login";
                 return View("LoggedOut", vm);
             }
         }

@@ -1,12 +1,17 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using IdentityServer4;
 using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Services;
 using IdentityServerBackend.Data;
 using IdentityServerBackend.Models;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -45,11 +50,9 @@ namespace IdentityServerBackend
                     "CorsPolicy",
                     corsBuilder =>
                     {
-                        var allowedOrigins = new[]
-                        {
-                            "http://localhost:4200",
-                            "httpw://localhost:4242"
-                        };
+                        var allowedOrigins = Configuration
+                            .GetSection("AllowedOrigins")
+                            .Get<List<string>>();
 
                         corsBuilder
                             .AllowAnyHeader()
@@ -61,6 +64,18 @@ namespace IdentityServerBackend
             });
 
             services.AddMvc();
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.Secure = CookieSecurePolicy.Always;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
             services.AddTransient<PasswordHasher<ApplicationUser>>();
             services.AddControllers();
 
@@ -97,7 +112,18 @@ namespace IdentityServerBackend
                 })
                 .AddAspNetIdentity<ApplicationUser>();
 
-            builder.AddDeveloperSigningCredential();
+            var certPassword = Configuration.GetValue<string>("CertificateSettings:CertPassword");
+
+            var certFilePath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "SigningKey.pfx"
+            );
+            var cert = new X509Certificate2(certFilePath, certPassword);
+
+            services
+                .AddDataProtection()
+                .PersistKeysToDbContext<ApplicationDbContext>()
+                .SetApplicationName("IdentityServer");
         }
 
         public void Configure(IApplicationBuilder app, IServiceScopeFactory serviceProvider)
@@ -112,6 +138,9 @@ namespace IdentityServerBackend
 
             app.UseRouting();
             app.UseIdentityServer();
+
+            app.UseCookiePolicy();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

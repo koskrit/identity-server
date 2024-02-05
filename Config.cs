@@ -58,26 +58,8 @@ namespace IdentityServerBackend
                         IdentityServerConstants.StandardScopes.Profile,
                         "projects-api",
                     },
-                    AccessTokenLifetime = 600,
+                    AccessTokenLifetime = 60 * 60 * 1
                 },
-                new Client
-                {
-                    ClientId = "mvc",
-                    ClientName = "MVC Client",
-                    AllowedGrantTypes = GrantTypes.Hybrid,
-
-                    ClientSecrets = { new Secret("secret".Sha256()) },
-
-                    RedirectUris = { "http://localhost:4201/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:4201/signout-callback-oidc" },
-
-                    AllowedScopes =
-                    {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
-                    },
-                    AllowOfflineAccess = true
-                }
             };
     }
 }
