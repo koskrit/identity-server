@@ -120,6 +120,8 @@ namespace IdentityServerBackend
             );
             var cert = new X509Certificate2(certFilePath, certPassword);
 
+            builder.AddSigningCredential(cert);
+
             services
                 .AddDataProtection()
                 .PersistKeysToDbContext<ApplicationDbContext>()
