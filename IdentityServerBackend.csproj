@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+      <Content Include="SigningKey.pfx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dangl.IdentityServer4.AspNetIdentity" Version="4.2.1" />
     <PackageReference Include="Dangl.IdentityServer4.EntityFramework" Version="4.2.1" />
 

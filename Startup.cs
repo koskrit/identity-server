@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using IdentityServer4;
 using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Services;
 using IdentityServerBackend.Data;
 using IdentityServerBackend.Models;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -109,7 +112,18 @@ namespace IdentityServerBackend
                 })
                 .AddAspNetIdentity<ApplicationUser>();
 
-            builder.AddDeveloperSigningCredential();
+            var certPassword = Configuration.GetValue<string>("CertificateSettings:CertPassword");
+
+            var certFilePath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "SigningKey.pfx"
+            );
+            var cert = new X509Certificate2(certFilePath, certPassword);
+
+            services
+                .AddDataProtection()
+                .PersistKeysToDbContext<ApplicationDbContext>()
+                .SetApplicationName("IdentityServer");
         }
 
         public void Configure(IApplicationBuilder app, IServiceScopeFactory serviceProvider)
